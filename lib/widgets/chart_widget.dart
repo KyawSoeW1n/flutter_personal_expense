@@ -36,7 +36,7 @@ class _ChartState extends State<Chart> {
   Widget build(BuildContext context) {
     return Card(
         elevation: 5,
-        margin: EdgeInsets.only(left: 20, right: 20,top: 20),
+        margin: EdgeInsets.only(left: 20, right: 20, top: 20),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
