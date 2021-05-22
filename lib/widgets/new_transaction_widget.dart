@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_personal_expense/widgets/common_widget/adaptive_flat_button_widget.dart';
 import 'package:intl/intl.dart';
 
 class NewTransaction extends StatefulWidget {
@@ -58,16 +59,7 @@ class _NewTransactionState extends State<NewTransaction> {
                 ),
               ],
             ),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    Theme.of(context).primaryColor),
-              ),
-              onPressed: () {
-                _submitData();
-              },
-              child: Text("Add"),
-            )
+            AdaptiveFlatButton(_submitData, 'Add')
           ],
         ),
       ),

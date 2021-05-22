@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Personal Expense'),
+      home: MyHomePage(title: ' Personal Expense'),
     );
   }
 }
@@ -63,14 +63,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+    final mediaQuery = MediaQuery.of(context);
+    final _isLandscape = mediaQuery.orientation == Orientation.landscape;
     final PreferredSizeWidget appBar = Platform.isIOS
         ? CupertinoNavigationBar(
-            middle: Text(widget.title),
+            middle: Text(
+              widget.title,
+            ),
             trailing: CupertinoButton(
-              child: Icon(CupertinoIcons.settings),
-              onPressed: () {},
+              child: Icon(
+                CupertinoIcons.add,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                _showBottomSheetForNewTransaction(context);
+              },
               padding: EdgeInsets.zero,
             ),
           )
@@ -85,10 +92,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final transactionWidget = Container(
         margin: EdgeInsets.all(4.0),
-        height: (MediaQuery.of(context).size.height -
-                appBar.preferredSize.height -
-                MediaQuery.of(context).padding.top) *
-            0.7,
+        height: mediaQuery.size.height -
+            appBar.preferredSize.height -
+            mediaQuery.padding.top * 0.7,
         child: TransactionList(_transactionList, _deleteTransaction));
 
     final pageBody = SafeArea(
@@ -99,7 +105,8 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Show Chart"),
+                Text("Show Chart",
+                    style: Theme.of(context).textTheme.headline6),
                 Switch.adaptive(
                   value: _isShowChart,
                   onChanged: (value) {
@@ -114,23 +121,23 @@ class _MyHomePageState extends State<MyHomePage> {
           if (_isLandscape)
             _isShowChart
                 ? Container(
-                    height: (MediaQuery.of(context).size.height -
+                    height: (mediaQuery.size.height -
                             appBar.preferredSize.height -
-                            MediaQuery.of(context).padding.top) *
+                            mediaQuery.padding.top) *
                         0.7,
                     child: Chart(_recentTransaction))
                 : Container(
-                    height: (MediaQuery.of(context).size.height -
+                    height: (mediaQuery.size.height -
                             appBar.preferredSize.height -
-                            MediaQuery.of(context).padding.top) *
+                            mediaQuery.padding.top) *
                         0.75,
                     child:
                         TransactionList(_transactionList, _deleteTransaction)),
           if (!_isLandscape)
             Container(
-                height: (MediaQuery.of(context).size.height -
+                height: (mediaQuery.size.height -
                         appBar.preferredSize.height -
-                        MediaQuery.of(context).padding.top) *
+                        mediaQuery.padding.top) *
                     0.3,
                 child: Chart(_recentTransaction)),
           if (!_isLandscape) transactionWidget,

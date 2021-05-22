@@ -22,12 +22,8 @@ class _TransactionListState extends State<TransactionList> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  "No Transaction yet",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14 * MediaQuery.of(context).textScaleFactor),
-                ),
+                Text("No Transaction yet",
+                    style: Theme.of(context).textTheme.headline6)
               ],
             ),
           )
