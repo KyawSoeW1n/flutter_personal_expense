@@ -61,11 +61,51 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {});
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final _isLandscape = mediaQuery.orientation == Orientation.landscape;
-    final PreferredSizeWidget appBar = Platform.isIOS
+  List<Widget> _buildPortraitContent(
+      MediaQueryData mediaQuery, AppBar appBar, Widget transactionList) {
+    return [
+      Container(
+          height: (mediaQuery.size.height -
+                  appBar.preferredSize.height -
+                  mediaQuery.padding.top) *
+              0.3,
+          child: Chart(_recentTransaction)),
+      transactionList
+    ];
+  }
+
+  List<Widget> _buildLandscapeContent(
+      MediaQueryData mediaQuery, AppBar appBar, Widget transactionWidget) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("Show Chart", style: Theme.of(context).textTheme.headline6),
+          Switch.adaptive(
+            value: _isShowChart,
+            onChanged: (value) {
+              setState(() {
+                _isShowChart = value;
+              });
+            },
+            activeColor: Colors.deepPurple,
+          ),
+        ],
+      ),
+      _isShowChart
+          ? Container(
+              height: (mediaQuery.size.height -
+                      appBar.preferredSize.height -
+                      mediaQuery.padding.top) *
+                  0.7,
+              child: Chart(_recentTransaction),
+            )
+          : transactionWidget
+    ];
+  }
+
+  Widget _buildAppBar() {
+    return Platform.isIOS
         ? CupertinoNavigationBar(
             middle: Text(
               widget.title,
@@ -89,35 +129,29 @@ class _MyHomePageState extends State<MyHomePage> {
                     _showBottomSheetForNewTransaction(context);
                   })
           ]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final _isLandscape = mediaQuery.orientation == Orientation.landscape;
+    final PreferredSizeWidget appBar = _buildAppBar();
 
     final transactionWidget = Container(
         margin: EdgeInsets.all(4.0),
-        height: mediaQuery.size.height -
-            appBar.preferredSize.height -
-            mediaQuery.padding.top * 0.7,
+        height: (mediaQuery.size.height -
+                appBar.preferredSize.height -
+                mediaQuery.padding.top) *
+            0.7,
         child: TransactionList(_transactionList, _deleteTransaction));
 
     final pageBody = SafeArea(
         child: SingleChildScrollView(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (_isLandscape)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Show Chart",
-                    style: Theme.of(context).textTheme.headline6),
-                Switch.adaptive(
-                  value: _isShowChart,
-                  onChanged: (value) {
-                    setState(() {
-                      _isShowChart = value;
-                    });
-                  },
-                  activeColor: Colors.deepPurple,
-                ),
-              ],
-            ),
+            ..._buildLandscapeContent(mediaQuery, appBar, transactionWidget),
           if (_isLandscape)
             _isShowChart
                 ? Container(
@@ -134,13 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child:
                         TransactionList(_transactionList, _deleteTransaction)),
           if (!_isLandscape)
-            Container(
-                height: (mediaQuery.size.height -
-                        appBar.preferredSize.height -
-                        mediaQuery.padding.top) *
-                    0.3,
-                child: Chart(_recentTransaction)),
-          if (!_isLandscape) transactionWidget,
+            ..._buildPortraitContent(mediaQuery, appBar, transactionWidget),
         ],
       ),
     ));
@@ -165,7 +193,6 @@ class _MyHomePageState extends State<MyHomePage> {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(25), topRight: Radius.circular(25))),
-        isScrollControlled: true,
         context: context,
         builder: (_) {
           return NewTransaction(_addNewTransaction);

@@ -22,7 +22,7 @@ class _NewTransactionState extends State<NewTransaction> {
     return Container(
       padding: EdgeInsets.all(8),
       child: Padding(
-        padding: const EdgeInsets.all(4.0),
+        padding: MediaQuery.of(context).viewInsets,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.end,
